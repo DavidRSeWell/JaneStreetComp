@@ -3,13 +3,17 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from .utils import load_sklearn
+
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
 
 class JaneData:
 
-    def __init__(self,data_dir: str,seed=None):
+    def __init__(self,config: dict,seed=None):
+        self._config = config
+        data_dir = config["data_config"]["data_path"]
         self.example_test = self.load_df(data_dir + "/example_test.csv")
         self.features_df = self.load_df(data_dir + "/features.csv")
         self.train_df = self.load_df(data_dir + "/train.csv")
@@ -88,6 +92,25 @@ class JaneData:
         title = "Histogram of Cluster Counts"
         plt.title(title, fontsize=12)
         plt.show()
+
+    def transform_from_config(self,X: np.ndarray) -> (dict,np.ndarray):
+
+        data_config = self._config["data_config"]
+
+        steps = {}
+        X = X.copy()
+        for step in data_config["steps"].keys():
+            config = data_config["steps"][step]
+            sklearn_trans , name = load_sklearn(step,config)
+            if "cluster" in name:
+                cluster = sklearn_trans.fit(X)
+                #TODO Not all sklearn cluster models have labels_ attribute
+                steps[step] = (cluster,config)
+            elif "decomposition" in name:
+                X = sklearn_trans.fit_transform(X)
+                steps[step] = (sklearn_trans,config)
+
+        return steps,X
 
     @staticmethod
     def run_pca(data,n):

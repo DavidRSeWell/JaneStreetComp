@@ -1,0 +1,24 @@
+
+agent_config:
+  agent: LogisticRegAgent
+  model_config:
+    random_state: 0
+  threshold: 0
+
+data_config:
+  data_path: /Users/davidsewell/MLData/JaneStreet
+  steps: # Steps should be a valid sklearn model name
+    # Properties of steps should be valid according with current model
+    # Steps will be run in order of which they occur. So output of one should be able
+    # to be processed as input to the next
+    PCA:
+      n_components: 20 # How many principle components to use
+      random_state: 0
+    KMeans:
+      n_clusters: 50 # number of clusters
+      random_state: 0
+
+exp_config:
+  iters: 1
+  test_size: 0.2
+  submission: false # Run a submission run?

@@ -3,6 +3,7 @@ Module containing all the
 """
 import numpy as np
 
+
 class SimpleKMeansBandit:
 
     def __init__(self,K,kmeans,tranform,threshold=0,eps=0.1):
