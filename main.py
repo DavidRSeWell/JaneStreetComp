@@ -21,17 +21,17 @@ def main(config):
 
     s_time = time.time()
 
-    jane_data = JaneData(config)
+    jane_data = JaneData(config["data_config"]["data_path"])
 
     train = jane_data.train_df
 
     train_features = jane_data.extract_features(train)
 
-    steps, X = jane_data.transform_from_config(train_features.to_numpy())
+    steps, X = jane_data.transform_from_config(train_features.to_numpy(),config)
 
     y = train["resp"]
 
-    pca , pca_config = steps["PCA"]
+    #pca , pca_config = steps["PCA"]
 
     kmeans,kmeans_config = steps["KMeans"]
 
@@ -41,13 +41,13 @@ def main(config):
         features = [f"feature_{i}" for i in range(130)]
         x = x.fillna(0)
         x = x[features].to_numpy().reshape((1, len(features)))
-        x = pca.transform(x)
+        #x = pca.transform(x)
         return x
 
     Agent , agent_config , Trainer = utils.load_agent(config["agent_config"])
 
     agent = object
-    if Agent == "SimpleKMeansBandit":
+    if Agent.__name__ == "SimpleKMeansBandit":
         agent = Agent(kmeans_config["n_clusters"], kmeans, transform,**agent_config)
     else:
         agent = Agent.load_from_config(config)
@@ -60,22 +60,26 @@ def main(config):
     except:
         pass
     train_config["agent"] = agent
-    train_config["X"] = X
-    train_config["y"] = y
+    if Agent.__name__ == "SimpleKMeansBandit":
+        train_config["data"] = train
+    else:
+        train_config["X"] = X
+        train_config["y"] = y
 
     trainer = Trainer.load_from_config(train_config)
 
     trainer.train()
 
-    train_s , test_s = trainer.test_predict()
+    if Agent.__name__ != "SimpleKMeansBandit":
+        train_s , test_s = trainer.test_predict()
 
-    print(train_s)
-    print(test_s)
+        print(train_s)
+        print(test_s)
 
     if exp_config["submission"]:
         pickle.dump(kmeans,open(data_dir + "/kmeans","wb"))
 
-        pickle.dump(pca,open(data_dir + "/pca","wb"))
+        #pickle.dump(pca,open(data_dir + "/pca","wb"))
 
         pickle.dump(list(agent.Q),open(data_dir + "/lookup","wb"))
 
@@ -96,7 +100,7 @@ if __name__ == "__main__":
     #train_df = train_df[10000:110000]
     #train_df.to_csv(data_dir + "/train_small_2.csv")
     #run(data_dir)
-    main("/Users/davidsewell/Github/JaneStreetComp/etc/sl_config.yaml")
+    main("/Users/davidsewell/Github/JaneStreetComp/etc/bandit_config.yaml")
 
     et = time.time()
     rt = (et - st) / 60.0

@@ -3,6 +3,8 @@ Module containing all the
 """
 import numpy as np
 
+from .utils import get_sub_config
+
 
 class SimpleKMeansBandit:
 

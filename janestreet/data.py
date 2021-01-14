@@ -11,9 +11,11 @@ from sklearn.decomposition import PCA
 
 class JaneData:
 
-    def __init__(self,config: dict,seed=None):
-        self._config = config
+    @classmethod
+    def load_from_config(cls,config):
         data_dir = config["data_config"]["data_path"]
+
+    def __init__(self,data_dir,seed=None):
         self.example_test = self.load_df(data_dir + "/example_test.csv")
         self.features_df = self.load_df(data_dir + "/features.csv")
         self.train_df = self.load_df(data_dir + "/train.csv")
@@ -93,9 +95,10 @@ class JaneData:
         plt.title(title, fontsize=12)
         plt.show()
 
-    def transform_from_config(self,X: np.ndarray) -> (dict,np.ndarray):
+    @staticmethod
+    def transform_from_config(X: np.ndarray, config: dict) -> (dict,np.ndarray):
 
-        data_config = self._config["data_config"]
+        data_config = config["data_config"]
 
         steps = {}
         X = X.copy()

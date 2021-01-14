@@ -63,9 +63,7 @@ class Trainer(ABC):
 
         while True:
 
-            state = env.state
-
-            action = agent.act(state)
+            action = agent.act(env.curr_idx)
 
             r, done = env.step(action)
 
@@ -87,7 +85,7 @@ class BanditTrainer(Trainer):
         req_config = get_sub_config(config, cls.req_args)
         assert len(req_config) == len(cls.req_args)
         op_config = get_sub_config(config,cls.op_args)
-        return cls(*req_config,*op_config)
+        return cls(**req_config,**op_config)
 
     def __init__(self,agent,data,submission=False,iters=10):
         self.agent = agent

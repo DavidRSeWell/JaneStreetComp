@@ -10,13 +10,13 @@ data_config:
     # Properties of steps should be valid according with current model
     # Steps will be run in order of which they occur. So output of one should be able
     # to be processed as input to the next
-    PCA:
-      n_components: 10 # How many principle components to use
-      random_state: 0
+    #PCA:
+    #  n_components: 10 # How many principle components to use
+    #  random_state: 0
     KMeans:
-      n_clusters: 10 # number of clusters
+      n_clusters: 100 # number of clusters
       random_state: 0
 
 exp_config:
-  iters: 1
-  submission: false # Run a submission run?
+  iters: 10
+  submission: true # Run a submission run?
