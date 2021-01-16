@@ -1,3 +1,6 @@
+import datetime
+import pickle
+
 from abc import ABC,abstractmethod
 
 from sklearn.linear_model import LogisticRegression
@@ -43,6 +46,13 @@ class LogisticRegAgent(SLAgent):
             return 1
         else:
             return 0
+
+    def save(self,path):
+        now = datetime.datetime.now()
+        now = now.strftime("%H:%M:%S")
+        filename = f"/lr_model_{now}"
+        with open(path + filename,'wb') as f:
+            pickle.dump(self._model,f)
 
     def score(self,X,y):
         return self._model.score(X,y)

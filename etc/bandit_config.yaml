@@ -18,5 +18,5 @@ data_config:
       random_state: 0
 
 exp_config:
-  iters: 10
+  iters: 1
   submission: true # Run a submission run?

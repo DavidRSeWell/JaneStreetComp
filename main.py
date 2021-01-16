@@ -55,11 +55,14 @@ def main(config):
     exp_config = config["exp_config"]
 
     train_config = config.copy()
+
     try:
         del train_config["agent_config"]["agent"]
     except:
         pass
+
     train_config["agent"] = agent
+
     if Agent.__name__ == "SimpleKMeansBandit":
         train_config["data"] = train
     else:
@@ -77,11 +80,17 @@ def main(config):
         print(test_s)
 
     if exp_config["submission"]:
-        pickle.dump(kmeans,open(data_dir + "/kmeans","wb"))
 
-        #pickle.dump(pca,open(data_dir + "/pca","wb"))
+        from datetime import datetime
 
-        pickle.dump(list(agent.Q),open(data_dir + "/lookup","wb"))
+        now = datetime.now()
+
+        now = now.strftime("%H:%M:%S")
+
+        pickle.dump(kmeans,open(data_dir + f"/kmeans_{now}","wb"))
+
+        agent.save(data_dir)
+
 
     e_time = time.time()
 
@@ -100,7 +109,8 @@ if __name__ == "__main__":
     #train_df = train_df[10000:110000]
     #train_df.to_csv(data_dir + "/train_small_2.csv")
     #run(data_dir)
-    main("/Users/davidsewell/Github/JaneStreetComp/etc/bandit_config.yaml")
+    #main("/Users/davidsewell/Github/JaneStreetComp/etc/bandit_config.yaml")
+    main("/Users/davidsewell/Github/JaneStreetComp/etc/sl_config.yaml")
 
     et = time.time()
     rt = (et - st) / 60.0

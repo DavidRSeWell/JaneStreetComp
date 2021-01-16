@@ -1,7 +1,9 @@
 """
 Module containing all the
 """
+import datetime
 import numpy as np
+import pickle
 
 from .utils import get_sub_config
 
@@ -55,6 +57,13 @@ class SimpleKMeansBandit:
         q = self.Q[arm]
         if q > 0: return 1
         else: return 0
+
+    def save(self,path):
+        now = datetime.datetime.now()
+        now = now.strftime("%H:%M:%S")
+        filename = f"/lookup_{now}"
+        with open(path + filename,"wb") as f:
+            pickle.dump(list(self.Q),f)
 
     def ucb(self,action,t):
         if self.N[action] == 0:

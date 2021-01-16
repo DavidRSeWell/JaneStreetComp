@@ -116,7 +116,8 @@ class BanditTrainer(Trainer):
 
                 state = self._train_env.state
 
-                action = self.agent.act(self._train_env.curr_idx)
+                #action = self.agent.act(self._train_env.curr_idx)
+                action = 1
 
                 r , done = self._train_env.step(action)
 
