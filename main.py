@@ -1,11 +1,14 @@
+import click
 import json
-import time
 
 from janestreet import utils
 
 from janestreet.data import JaneData
 
-def main(config):
+@click.command()
+@click.option("--config", help="Path to config file")
+@click.option("--output_path",help="Path to save output")
+def main(config,output_path):
 
     import pickle
     import time
@@ -31,7 +34,7 @@ def main(config):
 
     y = train["resp"]
 
-    #pca , pca_config = steps["PCA"]
+    pca , pca_config = steps["PCA"]
 
     kmeans,kmeans_config = steps["KMeans"]
 
@@ -41,7 +44,7 @@ def main(config):
         features = [f"feature_{i}" for i in range(130)]
         x = x.fillna(0)
         x = x[features].to_numpy().reshape((1, len(features)))
-        #x = pca.transform(x)
+        x = pca.transform(x)
         return x
 
     Agent , agent_config , Trainer = utils.load_agent(config["agent_config"])
@@ -87,9 +90,11 @@ def main(config):
 
         now = now.strftime("%H:%M:%S")
 
-        pickle.dump(kmeans,open(data_dir + f"/kmeans_{now}","wb"))
+        pickle.dump(kmeans,open(output_path + f"/kmeans_{now}","wb"))
 
-        agent.save(data_dir)
+        pickle.dump(pca, open(output_path + "/pca", "wb"))
+
+        agent.save(output_path)
 
 
     e_time = time.time()
@@ -100,18 +105,5 @@ def main(config):
     print((e_time - s_time) / 60.0)
 
 
-
 if __name__ == "__main__":
-
-    st = time.time()
-    data_dir = "/Users/davidsewell/MLData/JaneStreet"
-    #train_df = pd.read_csv(data_dir + "/train.csv")
-    #train_df = train_df[10000:110000]
-    #train_df.to_csv(data_dir + "/train_small_2.csv")
-    #run(data_dir)
-    #main("/Users/davidsewell/Github/JaneStreetComp/etc/bandit_config.yaml")
-    main("/Users/davidsewell/Github/JaneStreetComp/etc/sl_config.yaml")
-
-    et = time.time()
-    rt = (et - st) / 60.0
-    print(f"Runtime {rt}")
+    main()

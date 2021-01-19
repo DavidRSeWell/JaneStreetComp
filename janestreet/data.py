@@ -11,14 +11,10 @@ from sklearn.decomposition import PCA
 
 class JaneData:
 
-    @classmethod
-    def load_from_config(cls,config):
-        data_dir = config["data_config"]["data_path"]
-
     def __init__(self,data_dir,seed=None):
         self.example_test = self.load_df(data_dir + "/example_test.csv")
         self.features_df = self.load_df(data_dir + "/features.csv")
-        self.train_df = self.load_df(data_dir + "/train.csv")
+        self.train_df = self.load_df(data_dir + "/train_small.csv")
 
         self._pca = None
         self._seed = seed if (seed is not None) else np.random.seed(np.random.randint(1000))

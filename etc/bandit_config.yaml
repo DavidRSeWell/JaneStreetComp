@@ -5,18 +5,18 @@ agent_config:
   threshold: 0
 
 data_config:
-  data_path: /Users/davidsewell/MLData/JaneStreet
+  data_path: / # path to the janestreet data directory
   steps: # Steps should be a valid sklearn model name
     # Properties of steps should be valid according with current model
     # Steps will be run in order of which they occur. So output of one should be able
     # to be processed as input to the next
-    #PCA:
-    #  n_components: 10 # How many principle components to use
-    #  random_state: 0
+    PCA:
+      n_components: 10 # How many principle components to use
+      random_state: 0
     KMeans:
       n_clusters: 100 # number of clusters
       random_state: 0
 
 exp_config:
-  iters: 1
+  iters: 10
   submission: true # Run a submission run?
